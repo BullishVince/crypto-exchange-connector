@@ -1,14 +1,15 @@
 using Api.Adapters;
-using Api.Messages;
 using Api.Models.Binance;
 using Coinbase.Models;
 using Newtonsoft.Json;
 
-namespace Api.Services {
+namespace Api.Services
+{
     public interface IDepositService {
         public Task<Deposit[]> GetDepositsFromCoinbase(string accountId);
         public Task<decimal> GetTotalAmountDepositedToCoinbase(string accountId);
         public Task<string> GetFiatPaymentsFromBinance();
+        public Task<string> GetFiatDepositsFromBinance();
         public Task<decimal> GetTotalFiatPaymentsAmountFromBinance();
     }
     public class DepositService : IDepositService {
@@ -29,6 +30,7 @@ namespace Api.Services {
         }
 
         public async Task<string> GetFiatPaymentsFromBinance() => await _binanceAdapter.GetFiatPaymentsHistory();
+        public async Task<string> GetFiatDepositsFromBinance() => await _binanceAdapter.GetFiatDeposits();
         public async Task<decimal> GetTotalFiatPaymentsAmountFromBinance() {
             decimal amount = 0;
             var json = await _binanceAdapter.GetFiatPaymentsHistory();

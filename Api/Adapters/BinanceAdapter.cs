@@ -1,14 +1,11 @@
-using System.Threading.Tasks;
-using System;
-using System.Net;
-using System.Net.Http;
-using Binance.Common;
 using Binance.Spot;
 using Binance.Spot.Models;
 
-namespace Api.Adapters {
+namespace Api.Adapters
+{
     public interface IBinanceAdapter {
         Task<string> GetFiatPaymentsHistory();
+        Task<string> GetFiatDeposits();
     }
 
     public class BinanceAdapter : IBinanceAdapter {
@@ -22,5 +19,8 @@ namespace Api.Adapters {
 
         public async Task<string> GetFiatPaymentsHistory() 
             => await _fiatClient.GetFiatPaymentsHistory(FiatPaymentTransactionType.BUY, beginTime: DateTime.Today.AddYears(6).ToBinary());
+
+        public async Task<string> GetFiatDeposits() 
+            => await _fiatClient.GetFiatDepositWithdrawHistory(FiatOrderTransactionType.DEPOSIT, beginTime: DateTime.Today.AddYears(6).ToBinary());
     }
 }
