@@ -9,6 +9,8 @@ namespace Api.Adapters {
         Task<Account[]> GetAllAccounts();
         Task<Buy[]> GetPurchases(string accountId);
         Task<Transaction> GetTransaction(string accountId, string transactionId);
+        Task<Sell[]> GetCompletedSellOrders(string accountId);
+        Task<Buy[]> GetCompletedBuyOrders(string accountId);
     }
 
     public class CoinbaseAdapter : ICoinbaseAdapter {
@@ -43,6 +45,18 @@ namespace Api.Adapters {
         public async Task<Transaction> GetTransaction(string accountId, string transactionId) {
             var transaction  = await _client.Transactions.GetTransactionAsync(accountId, transactionId);
             return transaction.Data;
+        }
+
+        public async Task<Sell[]> GetCompletedSellOrders(string accountId)
+        {
+            var sellOrders  = await _client.Sells.ListSellsAsync(accountId);
+            return sellOrders.Data.Where(s => s.Status.Equals("Success")).ToArray();
+        }
+
+        public async Task<Buy[]> GetCompletedBuyOrders(string accountId)
+        {
+            var buyOrders  = await _client.Buys.ListBuysAsync(accountId);
+            return buyOrders.Data.Where(s => s.Status.Equals("Success")).ToArray();
         }
     }
 }
