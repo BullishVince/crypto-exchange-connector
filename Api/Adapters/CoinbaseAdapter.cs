@@ -7,6 +7,8 @@ namespace Api.Adapters {
         Task<Deposit[]> GetDeposits(string accountId);
         Task<Withdrawal[]> GetWithdrawals(string accountId);
         Task<Account[]> GetAllAccounts();
+        Task<Buy[]> GetPurchases(string accountId);
+        Task<Transaction> GetTransaction(string accountId, string transactionId);
     }
 
     public class CoinbaseAdapter : ICoinbaseAdapter {
@@ -33,9 +35,14 @@ namespace Api.Adapters {
             return accounts.Data;
         }
 
+        public async Task<Buy[]> GetPurchases(string accountId) {
+            var buys  = await _client.Buys.ListBuysAsync(accountId);
+            return buys.Data;
+        }
 
-        public class BinanceResponseObject {
-            
+        public async Task<Transaction> GetTransaction(string accountId, string transactionId) {
+            var transaction  = await _client.Transactions.GetTransactionAsync(accountId, transactionId);
+            return transaction.Data;
         }
     }
 }

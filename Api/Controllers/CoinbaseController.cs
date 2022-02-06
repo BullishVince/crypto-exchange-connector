@@ -60,5 +60,26 @@ namespace Api.Controllers
             var result = await _withdrawalService.GetTotalAmountWithdrawed(accountId);
             return Ok(result);
         } 
+
+        [HttpGet]
+        public async Task<IActionResult> GetPurchases(string accountId) 
+        {
+            var result = await _depositService.GetPurchasesFromCoinbase(accountId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTotalPurchaseAmount(string accountId) 
+        {
+            var result = await _depositService.GetTotalPurchaseAmountFromCoinbase(accountId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransaction(string accountId, string transactionId) 
+        {
+            var result = await _depositService.GetTransactionFromCoinbase(accountId, transactionId);
+            return Ok(result);
+        }
     }
 }

@@ -8,6 +8,10 @@ namespace Api.Services
     public interface IDepositService {
         public Task<Deposit[]> GetDepositsFromCoinbase(string accountId);
         public Task<decimal> GetTotalAmountDepositedToCoinbase(string accountId);
+        public Task<Buy[]> GetPurchasesFromCoinbase(string accountId);
+        public Task<decimal> GetTotalPurchaseAmountFromCoinbase(string accountId);
+        public Task<Transaction> GetTransactionFromCoinbase(string accountId, string transactionId);
+
         public Task<string> GetFiatPaymentsFromBinance();
         public Task<string> GetFiatDepositsFromBinance();
         public Task<decimal> GetTotalFiatPaymentsAmountFromBinance();
@@ -39,6 +43,21 @@ namespace Api.Services
                 amount += purchase.SourceAmount;
             }
             return amount;
+        }
+
+        public async Task<Buy[]> GetPurchasesFromCoinbase(string accountId) => await _coinbaseAdapter.GetPurchases(accountId);
+        public async Task<decimal> GetTotalPurchaseAmountFromCoinbase(string accountId) {
+            decimal amount = 0;
+            var purchases = await _coinbaseAdapter.GetPurchases(accountId);
+            foreach (Buy purchase in purchases) {
+                amount += purchase.Total.Amount;
+            }
+            return amount;
+        }
+
+        public async Task<Transaction> GetTransactionFromCoinbase(string accountId, string transactionId) {
+            var transaction = await _coinbaseAdapter.GetTransaction(accountId, transactionId);
+            return transaction;
         }
     }
 }
