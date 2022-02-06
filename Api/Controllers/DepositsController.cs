@@ -27,24 +27,38 @@ namespace Api.Controllers
         }
 
         [HttpGet("Coinbase/[action]")]
-        public async Task<IActionResult> GetAllDeposits(string accountId) 
+        public async Task<IActionResult> GetDepositsFromCoinbase(string accountId) 
         {
-            var result = await _depositService.GetDeposits(accountId);
+            var result = await _depositService.GetDepositsFromCoinbase(accountId);
             return Ok(result);
         }
 
         [HttpGet("Coinbase/[action]")]
-        public async Task<IActionResult> GetTotalAmountDeposited(string accountId) 
+        public async Task<IActionResult> GetTotalAmountDepositedToCoinbase(string accountId) 
         {
-            var result = await _depositService.GetTotalAmountDeposited(accountId);
+            var result = await _depositService.GetTotalAmountDepositedToCoinbase(accountId);
             return Ok(result);
         }
 
         [HttpGet("Binance/[action]")]
-        public async Task<IActionResult> GetPurchases() 
+        public async Task<IActionResult> GetAllFiatPayments() 
         {
-            var result = await _depositService.GetPurchasesFromBinance();
+            var result = await _depositService.GetFiatPaymentsFromBinance();
             return Ok(result);
         }
+
+        [HttpGet("Binance/[action]")]
+        public async Task<IActionResult> GetTotalFiatPaymentsAmount() 
+        {
+            var result = await _depositService.GetTotalFiatPaymentsAmountFromBinance();
+            return Ok(result);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTotalAmountDeposited([FromQuery] string fiatCurrency) 
+        {
+            var result = await _depositService.GetTotalFiatPaymentsAmountFromBinance();
+            return Ok(result);
+        }        
     }
 }
