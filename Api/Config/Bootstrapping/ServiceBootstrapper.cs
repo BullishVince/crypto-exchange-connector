@@ -11,6 +11,7 @@ namespace Api.Config.Bootstrapping
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IDepositService, DepositService>();
             services.AddScoped<IWithdrawalService, WithdrawalService>();
+            services.AddScoped<ITradingService, TradingService>();
             return services;
         }
     }
