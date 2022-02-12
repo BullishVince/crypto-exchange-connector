@@ -1,7 +1,7 @@
-**appsettings.Development.json**
 **obj**
 **/bin/**
 **.ignore**
 .vscode**
 .vs**
 Api/Properties*
+**appsettings.Development.json
