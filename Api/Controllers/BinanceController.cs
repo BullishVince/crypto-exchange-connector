@@ -49,6 +49,13 @@ namespace Api.Controllers
         {
             var result = await _tradingService.GetTickersFromBinance();
             return Ok(result);
-        }         
+        }   
+
+        [HttpGet]
+        public async Task<IActionResult> GetExecutedBuyOrders(string symbol) 
+        {
+            var result = await _tradingService.GetSuccessfulBuyOrdersFromBinance(symbol);
+            return Ok(result);
+        }      
     }
 }

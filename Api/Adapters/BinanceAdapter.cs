@@ -1,13 +1,15 @@
+using Api.Models.Binance;
 using Binance.Spot;
 using Binance.Spot.Models;
+using Newtonsoft.Json;
 
 namespace Api.Adapters
 {
     public interface IBinanceAdapter {
         Task<string> GetFiatPaymentsHistory();
         Task<string> GetFiatDeposits();
-        Task<string> GetAllExecutedBuyOrders();
-        Task<string> GetAllExecutedSellOrders();
+        Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol);
+        Task<string> GetAllExecutedSellOrders(string symbol);
         Task<string> GetTickers();
     }
 
@@ -29,12 +31,14 @@ namespace Api.Adapters
         public async Task<string> GetFiatDeposits() 
             => await _fiatClient.GetFiatDepositWithdrawHistory(FiatOrderTransactionType.DEPOSIT, beginTime: DateTime.Today.AddYears(6).ToBinary());
 
-        public async Task<string> GetAllExecutedBuyOrders()
+        public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol)
         {
-            throw new NotImplementedException();
+            var result = await _spotTradeClient.AllOrders(symbol.ToUpper());
+            var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
+            return orders.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
         }
 
-        public Task<string> GetAllExecutedSellOrders()
+        public Task<string> GetAllExecutedSellOrders(string symbol)
         {
             throw new NotImplementedException();
         }

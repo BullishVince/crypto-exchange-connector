@@ -7,7 +7,7 @@ namespace Api.Services;
 public interface ITradingService {
     public Task<Buy[]> GetSuccessfulBuyOrdersFromCoinbase(string accountId);
     public Task<Sell[]> GetSuccessfulSellOrdersFromCoinbase(string accountId);
-    public Task<string> GetSuccessfulBuyOrdersFromBinance();
+    public Task<SpotOrder[]> GetSuccessfulBuyOrdersFromBinance(string symbol);
     public Task<string> GetSuccessfulSellOrdersFromBinance();
     public Task<string> GetTickersFromBinance();
 }
@@ -29,9 +29,9 @@ public class TradingService : ITradingService {
         return await _coinbaseAdapter.GetCompletedSellOrders(accountId);
     }
 
-    public Task<string> GetSuccessfulBuyOrdersFromBinance()
+    public async Task<SpotOrder[]> GetSuccessfulBuyOrdersFromBinance(string symbol)
     {
-        throw new NotImplementedException();
+        return await _binanceAdapter.GetAllExecutedBuyOrders(symbol);
     }
 
     public Task<string> GetSuccessfulSellOrdersFromBinance()
