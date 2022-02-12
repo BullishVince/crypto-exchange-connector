@@ -26,14 +26,14 @@ namespace Api.Adapters
         }
 
         public async Task<string> GetFiatPaymentsHistory() 
-            => await _fiatClient.GetFiatPaymentsHistory(FiatPaymentTransactionType.BUY, beginTime: DateTime.Today.AddYears(6).ToBinary());
+            => await _fiatClient.GetFiatPaymentsHistory(FiatPaymentTransactionType.BUY, beginTime: DateTime.Today.AddYears(-6).ToBinary());
 
         public async Task<string> GetFiatDeposits() 
-            => await _fiatClient.GetFiatDepositWithdrawHistory(FiatOrderTransactionType.DEPOSIT, beginTime: DateTime.Today.AddYears(6).ToBinary());
+            => await _fiatClient.GetFiatDepositWithdrawHistory(FiatOrderTransactionType.DEPOSIT, beginTime: DateTime.Today.AddYears(-6).ToBinary());
 
         public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol)
         {
-            var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), startTime: DateTime.Today.AddYears(5).ToBinary(), limit: 1000);
+            var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), limit: 1000);
             var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
             return orders.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
         }
