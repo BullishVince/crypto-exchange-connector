@@ -33,9 +33,15 @@ namespace Api.Adapters
 
         public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol)
         {
-            var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), limit: 1000);
-            var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
-            return orders.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
+            var orderList = new List<SpotOrder>();
+            long startTime = (long)DateTime.Today.AddYears(-6).Subtract(DateTime.UnixEpoch).TotalSeconds;
+            for (int i = 0; i < 3; i++) {
+                var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), limit: 1000, startTime: startTime);
+                var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
+                orderList.AddRange(orders);
+                startTime = (long)(DateTime.UnixEpoch.AddSeconds(startTime)).AddYears(2).Subtract(DateTime.UnixEpoch).TotalSeconds;
+            }
+            return orderList.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
         }
 
         public Task<string> GetAllExecutedSellOrders(string symbol)
