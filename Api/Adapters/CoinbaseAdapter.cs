@@ -50,13 +50,13 @@ namespace Api.Adapters {
         public async Task<Sell[]> GetCompletedSellOrders(string accountId)
         {
             var sellOrders  = await _client.Sells.ListSellsAsync(accountId);
-            return sellOrders.Data.Where(s => s.Status.Equals("Success")).ToArray();
+            return sellOrders.Data.Where(s => s.Status.Equals("completed")).ToArray();
         }
 
         public async Task<Buy[]> GetCompletedBuyOrders(string accountId)
         {
             var buyOrders  = await _client.Buys.ListBuysAsync(accountId);
-            return buyOrders.Data.Where(s => s.Status.Equals("Success")).ToArray();
+            return buyOrders.Data.Where(s => s.Status.Equals("completed")).ToArray();
         }
     }
 }
