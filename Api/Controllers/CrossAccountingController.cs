@@ -13,13 +13,15 @@ namespace Api.Controllers
         private readonly IAccountService _accountService;
         private readonly IWithdrawalService _withdrawalService;
         private readonly ITradingService _tradingService;
+        private readonly ICrossAccountingService _crossAccountingService;
 
         public CrossAccountingController(
             ILogger<CrossAccountingController> logger, 
             IDepositService depositService,
             IAccountService accountService,
             IWithdrawalService withdrawalService,
-            ITradingService tradingService
+            ITradingService tradingService,
+            ICrossAccountingService crossAccountingService
             )
         {
             _logger = logger;
@@ -27,6 +29,7 @@ namespace Api.Controllers
             _accountService = accountService;
             _withdrawalService = withdrawalService;
             _tradingService = tradingService;
+            _crossAccountingService = crossAccountingService;
         }
 
         [HttpGet]
@@ -49,5 +52,12 @@ namespace Api.Controllers
             var result = await _tradingService.GetSuccessfulSellOrdersFromCoinbase(accountId);
             return Ok(result);
         }     
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllExecutedOrders() 
+        {
+            var result = await _crossAccountingService.GetAllExecutedOrders();
+            return Ok(result);
+        }  
     }
 }

@@ -14,6 +14,7 @@ namespace Api.Config.Bootstrapping
             services.AddScoped<IWithdrawalService, WithdrawalService>();
             services.AddScoped<ITradingService, TradingService>();
             services.AddScoped<IDataService, DataService>();
+            services.AddScoped<ICrossAccountingService, CrossAccountingService>();
             return services;
         }
     }

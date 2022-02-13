@@ -9,8 +9,9 @@ namespace Api.Adapters
     public interface IBinanceAdapter {
         Task<string> GetFiatPaymentsHistory();
         Task<string> GetFiatDeposits();
-        Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol);
-        Task<string> GetAllExecutedSellOrders(string symbol);
+        Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol, long? startTime = null, long? endTime = null);
+        Task<string> GetAllExecutedSellOrders(string symbol, long? startTime = null, long? endTime = null);
+        Task<SpotOrder[]> GetAllExecutedOrders(string symbol, long? startTime = null, long? endTime = null);
         Task<string> GetTickers();
     }
 
@@ -32,27 +33,37 @@ namespace Api.Adapters
         public async Task<string> GetFiatDeposits() 
             => await _fiatClient.GetFiatDepositWithdrawHistory(FiatOrderTransactionType.DEPOSIT, beginTime: DateTime.Today.AddYears(-6).ToBinary());
 
-        public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol)
+        public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol, long? startTime = null, long? endTime = null)
         {
-            var orderList = new List<SpotOrder>();
-            long startTime = DateTime.Today.AddYears(-6).ConvertDateTimeToUnixTimestamp();
-            for (int i = 0; i < 3; i++) {
-                var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), limit: 1000, startTime: startTime);
-                var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
-                orderList.AddRange(orders);
-                startTime = (long)(DateTime.UnixEpoch.AddSeconds(startTime)).AddYears(2).Subtract(DateTime.UnixEpoch).TotalSeconds;
-            }
-            return orderList.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
-        }
-
-        public Task<string> GetAllExecutedSellOrders(string symbol)
-        {
-            throw new NotImplementedException();
+            var result = await _spotTradeClient.AllOrders(
+                symbol.ToUpper(),
+                limit: 1000,
+                startTime: startTime,
+                endTime: endTime
+                );
+            var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
+            return orders.Where(o => o.ExecutedQty > 0 && o.Side == "BUY").ToArray();
         }
 
         public async Task<string> GetTickers()
         {
             return await _marketClient.SymbolPriceTicker();
+        }
+
+        public Task<string> GetAllExecutedSellOrders(string symbol, long? startTime = null, long? endTime = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<SpotOrder[]> GetAllExecutedOrders(string symbol, long? startTime = null, long? endTime = null)
+        {
+            var result = await _spotTradeClient.AllOrders(
+                symbol.ToUpper(),
+                limit: 1000,
+                startTime: startTime,
+                endTime: endTime
+                );
+            return JsonConvert.DeserializeObject<SpotOrder[]>(result).ToArray();
         }
     }
 }

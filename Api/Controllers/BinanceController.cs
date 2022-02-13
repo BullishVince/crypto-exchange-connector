@@ -52,9 +52,16 @@ namespace Api.Controllers
         }   
 
         [HttpGet]
-        public async Task<IActionResult> GetExecutedBuyOrders(string symbol) 
+        public async Task<IActionResult> GetExecutedBuyOrders(string symbol, int years) 
         {
-            var result = await _tradingService.GetSuccessfulBuyOrdersFromBinance(symbol);
+            var result = await _tradingService.GetSuccessfulBuyOrdersFromBinance(symbol, years);
+            return Ok(result);
+        }      
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllExecutedOrders(string symbol) 
+        {
+            var result = await _tradingService.GetExecutedOrdersFromBinance(symbol);
             return Ok(result);
         }      
     }
