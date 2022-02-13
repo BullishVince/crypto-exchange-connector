@@ -2,6 +2,7 @@ using Api.Models.Binance;
 using Binance.Spot;
 using Binance.Spot.Models;
 using Newtonsoft.Json;
+using Api.Helpers;
 
 namespace Api.Adapters
 {
@@ -34,7 +35,7 @@ namespace Api.Adapters
         public async Task<SpotOrder[]> GetAllExecutedBuyOrders(string symbol)
         {
             var orderList = new List<SpotOrder>();
-            long startTime = (long)DateTime.Today.AddYears(-6).Subtract(DateTime.UnixEpoch).TotalSeconds;
+            long startTime = DateTime.Today.AddYears(-6).ConvertDateTimeToUnixTimestamp();
             for (int i = 0; i < 3; i++) {
                 var result = await _spotTradeClient.AllOrders(symbol.ToUpper(), limit: 1000, startTime: startTime);
                 var orders = JsonConvert.DeserializeObject<SpotOrder[]>(result);
